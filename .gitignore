@@ -18,3 +18,5 @@ yarn-error.log
 /.idea
 /.vscode
 init-db.sql
+composer.lock
+composer.json
