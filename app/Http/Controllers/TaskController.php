@@ -5,11 +5,30 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
-
+/**
+ * @OA\Info(
+ *      version = "0.0.1",
+ *      title  = "L5 OpenApi Swagger Documentation for Tasks",
+ *      description = "L5 Api Rest for educational purposes"
+ * )
+ * */
 class TaskController extends Controller
 {
     /**
      * Display a listing of the resource.
+     * @OA\Get(
+     *       path="/api/tasks",
+     *      tags ={"tasks"},
+     *      summary = "Show task list",
+     *      @OA\Response(
+     *           response=200,
+     *          description="Show all tasks"
+     *     ),
+     *     @OA\Response(
+     *       response = "default",
+     *      description = "An error occurred"
+     *    )
+     * )
      */
     public function index()
     {
@@ -17,7 +36,7 @@ class TaskController extends Controller
 
         return response()->json([
             'tasks' => $task
-        ]);
+        ],200);
     }
 
     /**
