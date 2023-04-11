@@ -1,0 +1,28 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "L5 OpenApi Swagger Documentation for Tasks",
+        "description": "L5 Api Rest for educational purposes",
+        "version": "0.0.1"
+    },
+    "paths": {
+        "/api/tasks": {
+            "get": {
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Show task list",
+                "description": "Display a listing of the resource.",
+                "operationId": "471d938a3bfaeb6fbd981d7c3e2728b0",
+                "responses": {
+                    "200": {
+                        "description": "Show all tasks"
+                    },
+                    "default": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        }
+    }
+}
