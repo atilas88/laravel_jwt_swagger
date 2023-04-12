@@ -40,24 +40,57 @@ class TaskController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
+     * @OA\Post(
+     *     path="/api/tasks",
+     *     tags ={"tasks"},
+     *     summary = "Create a task",
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                      type="object",
+     *                      @OA\Property(
+     *                          property="name",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="description",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="content",
+     *                          type="string"
+     *                      )
+     *                 ),
+     *                 example={
+     *                     "name":"Tarea 53",
+     *                     "description":"Tarea automatica",
+     *                     "content":"Esta es una tarea de prueba"
+     *                }
+     *             )
+     *         )
+     *      ),
+     *     @OA\Response(
+     *        response=200,
+     *        description="Task created successfully"
+     *     ),
+     *     @OA\Response(
+     *       response = "default",
+     *      description = "An error occurred"
+     *    )
+     * )
      */
     public function store(Request $request)
     {
-        $task = new Task();
-        $task->name = $request->input('name');
-        $task->description = $request->input('description');
-        $task->content = $request->input('content');
 
-        $task->save();
+        $request->validate([
+            'name' => 'required|max:20',
+            'description' => 'required|max:50',
+            'content' => 'required|max:100'
+        ]);
+        $task =  Task::create($request->all());
 
         return response()->json([
             'message' => 'Task created successfully',
@@ -67,56 +100,174 @@ class TaskController extends Controller
 
     /**
      * Display the specified resource.
+     * @OA\Get(
+     *     path="/api/tasks/{id}",
+     *     tags ={"tasks"},
+     *     summary = "Show task info",
+     *     @OA\Parameter (
+     *      description = "Parameter to search the task",
+     *      in = "path",
+     *      name = "id",
+     *      required = true,
+     *      @OA\Schema (type = "integer"),
+     *      @OA\Examples( example = "int", value = "1", summary = "Enter a task id number")
+     *    ),
+     *     @OA\Response(
+     *      response = 200,
+     *      description = "Show task info"
+     *    ),
+     *     @OA\Response(
+     *      response = 404,
+     *      description = "The task has not been found"
+     *    ),
+     *     @OA\Response(
+     *       response = "default",
+     *       description = "An error occurred"
+     *    )
+     * )
      */
     public function show($id)
     {
         $task = Task::find($id);
 
-        return response()->json([
-            'task' => $task
-        ]);
-    }
+        if(is_null($task))
+        {
+            return response()->json([
+                'message' => 'The task has been not found',
+            ],404);
+        }
+        else
+        {
+            return response()->json([
+                'message' => 'Task found successfully',
+                'task' => $task
+            ],200);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Task $task)
-    {
-        //
     }
 
     /**
      * Update the specified resource in storage.
+     *
+     * @OA\Put (
+     *     path="/api/tasks/{id}",
+     *     tags ={"tasks"},
+     *     summary = "Update a task",
+     *     @OA\Parameter(
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema (type = "integer"),
+     *         @OA\Examples( example = "int", value = "1", summary = "Enter a task id number")
+     *     ),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                      type="object",
+     *                      @OA\Property(
+     *                          property="name",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="description",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="content",
+     *                          type="string"
+     *                      )
+     *                 ),
+     *                 example={
+     *                     "name":"Tarea 53",
+     *                     "description":"Tarea automatica",
+     *                     "content":"Esta es una tarea de prueba"
+     *                }
+     *             )
+     *         )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Task updated success"
+     *      ),
+     *     @OA\Response(
+     *      response = 404,
+     *      description = "The task has not been found"
+     *    ),
+     *     @OA\Response(
+     *       response = "default",
+     *      description = "An error occurred"
+     *    )
+     * )
      */
     public function update(Request $request,$id)
     {
-        $task = Task::find($id);
-
-        $task->name = $request->input('name');
-        $task->description = $request->input('description');
-        $task->content = $request->input('content');
-
-        $task->save();
-
-        return response()->json([
-            'message' => 'Task updated successfully',
-            'task' => $task
+        $request->validate([
+            'name' => 'required|max:20',
+            'description' => 'required|max:50',
+            'content' => 'required|max:100'
         ]);
 
+        $task = Task::find($id);
+
+        if(is_null($task))
+        {
+            return response()->json([
+                'message' => 'The task has been not found',
+            ],404);
+        }
+        else
+        {
+            $task->update($request->all());
+            return response()->json([
+                'message' => 'Task updated successfully',
+                'task' => $task
+            ]);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
+     * @OA\Delete (
+     *     path="/api/tasks/{id}",
+     *     tags ={"tasks"},
+     *     summary = "Delete a task",
+     *     @OA\Parameter(
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *          @OA\Examples( example = "int", value = "1", summary = "Enter a task id number")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Task delete successfully"
+     *     ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="The task has been not found"
+     *      ),
+     *     @OA\Response(
+     *       response = "default",
+     *      description = "An error occurred"
+     *    )
+     * )
      */
     public function destroy($id)
     {
         $task = Task::find($id);
 
+        if(is_null($task))
+        {
+            return response()->json([
+                'message' => 'The task has been not found',
+            ],404);
+        }
         $task->delete();
 
         return response()->json([
-            'message' => 'Task deleted successfully'
-        ]);
-
+                'message' => 'Task deleted successfully'
+            ]);
     }
 }
