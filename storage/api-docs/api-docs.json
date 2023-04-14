@@ -1,11 +1,82 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "L5 OpenApi Swagger Documentation for Tasks",
-        "description": "L5 Api Rest for educational purposes",
+        "title": "Api rest Documentation for Tasks",
+        "description": "Api Rest for educational purposes",
         "version": "0.0.1"
     },
     "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User authentication",
+                "description": "Get a JWT via given credentials.",
+                "operationId": "d33fa59eac86d58bb7a93b3ff8a3b7f1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "description": "User email",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "User password",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User authenticate"
+                    },
+                    "401": {
+                        "description": "User Unauthorized"
+                    },
+                    "default": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User logout",
+                "description": "Log the user out (Invalidate the token).",
+                "operationId": "29573ceac77e01db83ed67bd710fc374",
+                "responses": {
+                    "200": {
+                        "description": "User logout"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "default": {
+                        "description": "An error occurred"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/tasks": {
             "get": {
                 "tags": [
@@ -18,10 +89,18 @@
                     "200": {
                         "description": "Show all tasks"
                     },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
                     "default": {
                         "description": "An error occurred"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -64,10 +143,18 @@
                     "200": {
                         "description": "Task created successfully"
                     },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
                     "default": {
                         "description": "An error occurred"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/api/tasks/{id}": {
@@ -102,10 +189,18 @@
                     "404": {
                         "description": "The task has not been found"
                     },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
                     "default": {
                         "description": "An error occurred"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             },
             "put": {
                 "tags": [
@@ -167,10 +262,18 @@
                     "404": {
                         "description": "The task has not been found"
                     },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
                     "default": {
                         "description": "An error occurred"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -202,10 +305,28 @@
                     "404": {
                         "description": "The task has been not found"
                     },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
                     "default": {
                         "description": "An error occurred"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearer": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
             }
         }
     }

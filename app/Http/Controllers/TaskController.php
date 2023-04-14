@@ -8,21 +8,31 @@ use Illuminate\Http\Request;
 /**
  * @OA\Info(
  *      version = "0.0.1",
- *      title  = "L5 OpenApi Swagger Documentation for Tasks",
- *      description = "L5 Api Rest for educational purposes"
+ *      title  = "Api rest Documentation for Tasks",
+ *      description = "Api Rest for educational purposes"
  * )
  * */
 class TaskController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('jwt.auth');
+    }
+    //security={{"bearer":{}}},
     /**
      * Display a listing of the resource.
      * @OA\Get(
      *       path="/api/tasks",
      *      tags ={"tasks"},
      *      summary = "Show task list",
+     *      security={{"bearer":{}}},
      *      @OA\Response(
      *           response=200,
      *          description="Show all tasks"
+     *     ),
+     *     @OA\Response(
+     *           response=401,
+     *          description="Unauthorized"
      *     ),
      *     @OA\Response(
      *       response = "default",
@@ -45,6 +55,7 @@ class TaskController extends Controller
      *     path="/api/tasks",
      *     tags ={"tasks"},
      *     summary = "Create a task",
+     *     security={{"bearer":{}}},
      *     @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -77,6 +88,10 @@ class TaskController extends Controller
      *        description="Task created successfully"
      *     ),
      *     @OA\Response(
+     *           response=401,
+     *          description="Unauthorized"
+     *     ),
+     *     @OA\Response(
      *       response = "default",
      *      description = "An error occurred"
      *    )
@@ -104,6 +119,7 @@ class TaskController extends Controller
      *     path="/api/tasks/{id}",
      *     tags ={"tasks"},
      *     summary = "Show task info",
+     *     security={{"bearer":{}}},
      *     @OA\Parameter (
      *      description = "Parameter to search the task",
      *      in = "path",
@@ -120,6 +136,10 @@ class TaskController extends Controller
      *      response = 404,
      *      description = "The task has not been found"
      *    ),
+     *   @OA\Response(
+     *           response=401,
+     *          description="Unauthorized"
+     *     ),
      *     @OA\Response(
      *       response = "default",
      *       description = "An error occurred"
@@ -153,6 +173,7 @@ class TaskController extends Controller
      *     path="/api/tasks/{id}",
      *     tags ={"tasks"},
      *     summary = "Update a task",
+     *     security={{"bearer":{}}},
      *     @OA\Parameter(
      *         in="path",
      *         name="id",
@@ -195,6 +216,10 @@ class TaskController extends Controller
      *      response = 404,
      *      description = "The task has not been found"
      *    ),
+     *    @OA\Response(
+     *           response=401,
+     *          description="Unauthorized"
+     *     ),
      *     @OA\Response(
      *       response = "default",
      *      description = "An error occurred"
@@ -233,6 +258,7 @@ class TaskController extends Controller
      *     path="/api/tasks/{id}",
      *     tags ={"tasks"},
      *     summary = "Delete a task",
+     *     security={{"bearer":{}}},
      *     @OA\Parameter(
      *         in="path",
      *         name="id",
@@ -248,6 +274,10 @@ class TaskController extends Controller
      *          response=404,
      *          description="The task has been not found"
      *      ),
+     *      @OA\Response(
+     *           response=401,
+     *          description="Unauthorized"
+     *     ),
      *     @OA\Response(
      *       response = "default",
      *      description = "An error occurred"
